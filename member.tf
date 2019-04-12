@@ -1,4 +1,4 @@
-# the invites send to the member accounts in each region
+# The invites send to the member accounts in each region
 resource "aws_guardduty_member" "eu_west_3" {
   count              = "${length(var.accounts)}"
   account_id         = "${index(keys(var.accounts), count.index)}"
