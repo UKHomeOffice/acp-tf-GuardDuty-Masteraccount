@@ -138,3 +138,13 @@ resource "aws_guardduty_member" "ap_south_1" {
   invitation_message = "${var.invite_message}"
   provider           = "aws.ap-south-1"
 }
+
+resource "aws_guardduty_member" "ca_central_1" {
+  count              = "${length(var.accounts)}"
+  account_id         = "${element(keys(var.accounts), count.index)}"
+  detector_id        = "${aws_guardduty_detector.ap_south_1.id}"
+  email              = "${lookup(var.accounts, element(keys(var.accounts), count.index))}"
+  invite             = true
+  invitation_message = "${var.invite_message}"
+  provider           = "aws.ca-central-1"
+}
