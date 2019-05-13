@@ -81,3 +81,9 @@ resource "aws_guardduty_detector" "us_west_1" {
   provider                     = "aws.us-west-1"
   finding_publishing_frequency = "${var.publishing_frequency}"
 }
+
+resource "aws_guardduty_detector" "ca_central_1" {
+  enable                       = true
+  provider                     = "aws.ca-central-1"
+  finding_publishing_frequency = "${var.publishing_frequency}"
+}
