@@ -12,3 +12,4 @@ variable "publishing_frequency" {
   description = "finding_publishing_frequency"
   default     = "SIX_HOURS"
 }
+
