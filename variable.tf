@@ -13,3 +13,10 @@ variable "publishing_frequency" {
   default     = "SIX_HOURS"
 }
 
+variable "name" {
+  description = "Name used to suffix S3 bucket / Roles"
+}
+
+variable "replication_destination_bucket_arn" {
+  description = "S3 Destination bucket arn for replication"
+}
