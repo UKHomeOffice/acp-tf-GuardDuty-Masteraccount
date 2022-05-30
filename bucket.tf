@@ -91,8 +91,16 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
 resource "aws_kms_key" "guardduty_key" {
   description             = "GuardDuty key for publishing events"
-  deletion_window_in_days = 7
+  enable_key_rotation     = true
   policy                  = data.aws_iam_policy_document.kms_policy.json
+}
+
+resource "aws_s3_bucket_versioning" "this" {
+  bucket = aws_s3_bucket.guardduty_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 resource "aws_kms_alias" "guardduty_key_alias" {
