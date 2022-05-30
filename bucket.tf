@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "bucket_policy" {
 
     condition {
       test     = "StringEquals"
-      variable = "s3:aws:SourceAccount"
+      variable = "aws:SourceAccount"
 
       values = [
         data.aws_caller_identity.current.account_id
@@ -45,7 +45,7 @@ data "aws_iam_policy_document" "bucket_policy" {
 
     condition {
       test     = "StringEquals"
-      variable = "s3:aws:SourceAccount"
+      variable = "aws:SourceAccount"
 
       values = [
         data.aws_caller_identity.current.account_id
@@ -70,6 +70,15 @@ data "aws_iam_policy_document" "kms_policy" {
     principals {
       type        = "Service"
       identifiers = ["guardduty.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+
+      values = [
+        data.aws_caller_identity.current.account_id
+      ]
     }
   }
   statement {
@@ -123,7 +132,7 @@ data "aws_iam_policy_document" "kms_policy" {
 }
 
 resource "aws_s3_bucket" "guardduty_bucket" {
-  bucket        = "example"
+  bucket        = "acp-guardduty-aggregation-ops-prod-eu-west-2"
   force_destroy = true
 }
 
