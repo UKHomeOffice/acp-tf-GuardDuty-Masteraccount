@@ -171,16 +171,6 @@ resource "aws_kms_alias" "guardduty_key_alias" {
   target_key_id = aws_kms_key.guardduty_key.key_id
 }
 
-# resource "aws_guardduty_publishing_destination" "test" {
-#   detector_id     = aws_guardduty_detector.test_gd.id
-#   destination_arn = aws_s3_bucket.gd_bucket.arn
-#   kms_key_arn     = aws_kms_key.gd_key.arn
-
-#   depends_on = [
-#     aws_s3_bucket_policy.gd_bucket_policy,
-#   ]
-# }
-
 // START - S3 replication
 
 data "aws_iam_policy_document" "source_replication_policy" {

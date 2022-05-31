@@ -4,6 +4,16 @@ resource "aws_guardduty_detector" "eu_west_1" {
   finding_publishing_frequency = var.publishing_frequency
 }
 
+# resource "aws_guardduty_publishing_destination" "test" {
+#   detector_id     = aws_guardduty_detector.test_gd.id
+#   destination_arn = aws_s3_bucket.gd_bucket.arn
+#   kms_key_arn     = aws_kms_key.gd_key.arn
+
+#   depends_on = [
+#     aws_s3_bucket_policy.gd_bucket_policy,
+#   ]
+# }
+
 resource "aws_guardduty_detector" "eu_west_2" {
   enable                       = true
   provider                     = aws
