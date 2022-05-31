@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "kms_policy" {
     ]
 
     resources = [
-      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+      aws_kms_key.guardduty_key.arn
     ]
 
     principals {
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "kms_policy" {
     sid    = "IAMPermissions"
     effect = "Allow"
 
-    resources = ["*"]
+    resources = [aws_kms_key.guardduty_key.arn]
 
     actions = [
       "kms:*",
@@ -104,7 +104,7 @@ data "aws_iam_policy_document" "kms_policy" {
     sid    = "KeyAdministratorsPermissions"
     effect = "Allow"
 
-    resources = ["*"]
+    resources = [aws_kms_key.guardduty_key.arn]
 
     actions = [
       "kms:Create*",
@@ -132,13 +132,19 @@ data "aws_iam_policy_document" "kms_policy" {
 }
 
 resource "aws_s3_bucket" "guardduty_bucket" {
-  bucket        = "acp-guardduty-aggregation-ops-prod-eu-west-2"
-  force_destroy = true
+  bucket        = var.name
 }
 
-resource "aws_s3_bucket_acl" "bucket_acl" {
+resource "aws_s3_bucket_acl" "this" {
   bucket = aws_s3_bucket.guardduty_bucket.id
   acl    = "private"
+}
+
+resource "aws_s3_bucket_public_access_block" "this" {
+  bucket = aws_s3_bucket.guardduty_bucket.id
+
+  block_public_acls   = true
+  block_public_policy = true
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
@@ -174,3 +180,78 @@ resource "aws_kms_alias" "guardduty_key_alias" {
 #     aws_s3_bucket_policy.gd_bucket_policy,
 #   ]
 # }
+
+// START - S3 replication
+
+data "aws_iam_policy_document" "source_replication_policy" {
+  statement {
+    actions = [
+      "s3:GetReplicationConfiguration",
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "${aws_s3_bucket.guardduty_bucket.arn}",
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:GetObjectVersionForReplication",
+      "s3:GetObjectVersionAcl",
+    ]
+
+    resources = [
+      aws_s3_bucket.guardduty_bucket.arn,
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:ReplicateObject",
+      "s3:ReplicateDelete",
+      "s3:ObjectOwnerOverrideToBucketOwner",
+    ]
+
+    resources = [
+      var.replication_destination_bucket_arn,
+    ]
+  }
+
+  statement {
+    sid    = "KMSDecrypt"
+    effect = "Allow"
+
+    resources = [aws_kms_key.guardduty_key.arn]
+
+    actions = [
+      "kms:Decrypt",
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "source_replication_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "source_replication" {
+  name               = "${local.replication_name}-s3-replication-role"
+  assume_role_policy = data.aws_iam_policy_document.source_replication_role.json
+}
+
+resource "aws_iam_policy" "source_replication" {
+  name     = "${local.replication_name}-replication-policy"
+  policy   = "${data.aws_iam_policy_document.source_replication_policy.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "source_replication" {
+  role       = "${aws_iam_role.source_replication.name}"
+  policy_arn = "${aws_iam_policy.source_replication.arn}"
+}
