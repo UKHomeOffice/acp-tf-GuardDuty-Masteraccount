@@ -187,10 +187,11 @@ data "aws_iam_policy_document" "source_replication_policy" {
     actions = [
       "s3:GetObjectVersionForReplication",
       "s3:GetObjectVersionAcl",
+      "s3:GetObjectVersionTagging"
     ]
 
     resources = [
-      aws_s3_bucket.guardduty_bucket.arn,
+      "${aws_s3_bucket.guardduty_bucket.arn}/*",
     ]
   }
 
@@ -198,7 +199,7 @@ data "aws_iam_policy_document" "source_replication_policy" {
     actions = [
       "s3:ReplicateObject",
       "s3:ReplicateDelete",
-      "s3:ObjectOwnerOverrideToBucketOwner",
+      "s3:ReplicateTags"
     ]
 
     resources = [
