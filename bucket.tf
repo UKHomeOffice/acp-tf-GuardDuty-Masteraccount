@@ -63,9 +63,7 @@ data "aws_iam_policy_document" "kms_policy" {
       "kms:GenerateDataKey"
     ]
 
-    resources = [
-      aws_kms_key.guardduty_key.arn
-    ]
+    resources = ["*"]
 
     principals {
       type        = "Service"
@@ -85,7 +83,7 @@ data "aws_iam_policy_document" "kms_policy" {
     sid    = "IAMPermissions"
     effect = "Allow"
 
-    resources = [aws_kms_key.guardduty_key.arn]
+    resources = ["*"]
 
     actions = [
       "kms:*",
@@ -104,7 +102,7 @@ data "aws_iam_policy_document" "kms_policy" {
     sid    = "KeyAdministratorsPermissions"
     effect = "Allow"
 
-    resources = [aws_kms_key.guardduty_key.arn]
+    resources = ["*"]
 
     actions = [
       "kms:Create*",
