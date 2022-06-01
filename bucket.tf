@@ -173,75 +173,91 @@ resource "aws_kms_alias" "guardduty_key_alias" {
 
 // START - S3 replication
 
-data "aws_iam_policy_document" "source_replication_policy" {
-  statement {
-    actions = [
-      "s3:GetReplicationConfiguration",
-      "s3:ListBucket",
-    ]
+# data "aws_iam_policy_document" "source_replication_policy" {
+#   statement {
+#     actions = [
+#       "s3:GetReplicationConfiguration",
+#       "s3:ListBucket",
+#     ]
 
-    resources = [
-      "${aws_s3_bucket.guardduty_bucket.arn}",
-    ]
-  }
+#     resources = [
+#       "${aws_s3_bucket.guardduty_bucket.arn}",
+#     ]
+#   }
 
-  statement {
-    actions = [
-      "s3:GetObjectVersionForReplication",
-      "s3:GetObjectVersionAcl",
-    ]
+#   statement {
+#     actions = [
+#       "s3:GetObjectVersionForReplication",
+#       "s3:GetObjectVersionAcl",
+#     ]
 
-    resources = [
-      aws_s3_bucket.guardduty_bucket.arn,
-    ]
-  }
+#     resources = [
+#       aws_s3_bucket.guardduty_bucket.arn,
+#     ]
+#   }
 
-  statement {
-    actions = [
-      "s3:ReplicateObject",
-      "s3:ReplicateDelete",
-      "s3:ObjectOwnerOverrideToBucketOwner",
-    ]
+#   statement {
+#     actions = [
+#       "s3:ReplicateObject",
+#       "s3:ReplicateDelete",
+#       "s3:ObjectOwnerOverrideToBucketOwner",
+#     ]
 
-    resources = [
-      var.replication_destination_bucket_arn,
-    ]
-  }
+#     resources = [
+#       var.replication_destination_bucket_arn,
+#     ]
+#   }
 
-  statement {
-    sid    = "KMSDecrypt"
-    effect = "Allow"
+#   statement {
+#     sid    = "KMSDecrypt"
+#     effect = "Allow"
 
-    resources = [aws_kms_key.guardduty_key.arn]
+#     resources = [aws_kms_key.guardduty_key.arn]
 
-    actions = [
-      "kms:Decrypt",
-    ]
-  }
-}
+#     actions = [
+#       "kms:Decrypt",
+#     ]
+#   }
+# }
 
-data "aws_iam_policy_document" "source_replication_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
+# data "aws_iam_policy_document" "source_replication_role" {
+#   statement {
+#     actions = ["sts:AssumeRole"]
 
-    principals {
-      type        = "Service"
-      identifiers = ["s3.amazonaws.com"]
-    }
-  }
-}
+#     principals {
+#       type        = "Service"
+#       identifiers = ["s3.amazonaws.com"]
+#     }
+#   }
+# }
 
-resource "aws_iam_role" "source_replication" {
-  name               = "${local.replication_name}-s3-replication-role"
-  assume_role_policy = data.aws_iam_policy_document.source_replication_role.json
-}
+# resource "aws_iam_role" "source_replication" {
+#   name               = "${local.replication_name}-s3-replication-role"
+#   assume_role_policy = data.aws_iam_policy_document.source_replication_role.json
+# }
 
-resource "aws_iam_policy" "source_replication" {
-  name     = "${local.replication_name}-replication-policy"
-  policy   = "${data.aws_iam_policy_document.source_replication_policy.json}"
-}
+# resource "aws_iam_policy" "source_replication" {
+#   name     = "${local.replication_name}-replication-policy"
+#   policy   = "${data.aws_iam_policy_document.source_replication_policy.json}"
+# }
 
-resource "aws_iam_role_policy_attachment" "source_replication" {
-  role       = "${aws_iam_role.source_replication.name}"
-  policy_arn = "${aws_iam_policy.source_replication.arn}"
-}
+# resource "aws_iam_role_policy_attachment" "source_replication" {
+#   role       = "${aws_iam_role.source_replication.name}"
+#   policy_arn = "${aws_iam_policy.source_replication.arn}"
+# }
+
+# resource "aws_s3_bucket_replication_configuration" "replication" {
+#   depends_on = [aws_s3_bucket_versioning.this]
+
+#   role   = aws_iam_role.source_replication.arn
+#   bucket = aws_s3_bucket.guardduty_bucket.id
+
+#   rule {
+#     status = "Enabled"
+
+#     destination {
+#       bucket        = var.replication_destination_bucket_arn
+#       storage_class = "STANDARD"
+#     }
+#   }
+# }

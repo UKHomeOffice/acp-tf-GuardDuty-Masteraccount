@@ -17,7 +17,7 @@ variable "name" {
   description = "Name used to suffix S3 bucket / Roles"
 }
 
-variable "replication_destination_bucket_arn" {
-  description = ""
-  default = ""
-}
+# variable "replication_destination_bucket_arn" {
+#   description = ""
+#   default = ""
+# }
