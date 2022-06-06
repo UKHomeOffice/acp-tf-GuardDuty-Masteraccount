@@ -142,7 +142,7 @@ resource "aws_guardduty_detector" "ap_northeast_3" {
 }
 
 resource "aws_guardduty_publishing_destination" "ap_northeast_3" {
-  provider        = aws.ap-northeast-2
+  provider        = aws.ap-northeast-3
   detector_id     = aws_guardduty_detector.ap_northeast_3.id
   destination_arn = aws_s3_bucket.guardduty_bucket.arn
   kms_key_arn     = aws_kms_key.guardduty_key.arn
