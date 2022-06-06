@@ -120,14 +120,14 @@ resource "aws_guardduty_member" "ap_southeast_2" {
   provider           = aws.ap-southeast-2
 }
 
-resource "aws_guardduty_member" "ap_southeast_3" {
+resource "aws_guardduty_member" "ap_northeast_3" {
   count              = length(var.accounts)
   account_id         = element(keys(var.accounts), count.index)
-  detector_id        = aws_guardduty_detector.ap_southeast_3.id
+  detector_id        = aws_guardduty_detector.ap_northeast_3.id
   email              = var.accounts[element(keys(var.accounts), count.index)]
   invite             = true
   invitation_message = var.invite_message
-  provider           = aws.ap-southeast-3
+  provider           = aws.ap-northeast-3
 }
 
 resource "aws_guardduty_member" "ap_northeast_2" {
