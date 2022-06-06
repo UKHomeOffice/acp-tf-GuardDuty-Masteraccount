@@ -49,6 +49,23 @@ resource "aws_guardduty_publishing_destination" "eu_west_3" {
   ]
 }
 
+resource "aws_guardduty_detector" "eu_north_1" {
+  enable                       = true
+  provider                     = aws.eu-north-1
+  finding_publishing_frequency = var.publishing_frequency
+}
+
+resource "aws_guardduty_publishing_destination" "eu_north_1" {
+  provider        = aws.eu-north-1
+  detector_id     = aws_guardduty_detector.eu_north_1.id
+  destination_arn = aws_s3_bucket.guardduty_bucket.arn
+  kms_key_arn     = aws_kms_key.guardduty_key.arn
+
+  depends_on = [
+    aws_s3_bucket_policy.bucket_policy,
+  ]
+}
+
 resource "aws_guardduty_detector" "sa_east_1" {
   enable                       = true
   provider                     = aws.sa-east-1
@@ -110,6 +127,23 @@ resource "aws_guardduty_detector" "ap_northeast_2" {
 resource "aws_guardduty_publishing_destination" "ap_northeast_2" {
   provider        = aws.ap-northeast-2
   detector_id     = aws_guardduty_detector.ap_northeast_2.id
+  destination_arn = aws_s3_bucket.guardduty_bucket.arn
+  kms_key_arn     = aws_kms_key.guardduty_key.arn
+
+  depends_on = [
+    aws_s3_bucket_policy.bucket_policy,
+  ]
+}
+
+resource "aws_guardduty_detector" "ap_northeast_3" {
+  enable                       = true
+  provider                     = aws.ap-northeast-3
+  finding_publishing_frequency = var.publishing_frequency
+}
+
+resource "aws_guardduty_publishing_destination" "ap_northeast_3" {
+  provider        = aws.ap-northeast-2
+  detector_id     = aws_guardduty_detector.ap_northeast_3.id
   destination_arn = aws_s3_bucket.guardduty_bucket.arn
   kms_key_arn     = aws_kms_key.guardduty_key.arn
 
