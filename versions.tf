@@ -7,6 +7,7 @@ terraform {
       configuration_aliases = [
         aws.eu-west-2,
         aws.eu-west-1,
+        aws.eu-north-1,
         aws.us-east-1,
         aws.us-east-2,
         aws.us-west-2,
@@ -15,6 +16,7 @@ terraform {
         aws.ap-southeast-2,
         aws.ap-northeast-1,
         aws.ap-northeast-2,
+        aws.ap-northeast-3,
         aws.ap-south-1,
         aws.eu-central-1,
         aws.eu-west-3,
