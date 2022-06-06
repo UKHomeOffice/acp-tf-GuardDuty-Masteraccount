@@ -29,6 +29,17 @@ resource "aws_guardduty_member" "eu_west_1" {
   provider           = aws.eu-west-1
 }
 
+
+resource "aws_guardduty_member" "eu_north_1" {
+  count              = length(var.accounts)
+  account_id         = element(keys(var.accounts), count.index)
+  detector_id        = aws_guardduty_detector.eu_north_1.id
+  email              = var.accounts[element(keys(var.accounts), count.index)]
+  invite             = true
+  invitation_message = var.invite_message
+  provider           = aws.eu-north-1
+}
+
 resource "aws_guardduty_member" "us_west_1" {
   count              = length(var.accounts)
   account_id         = element(keys(var.accounts), count.index)
@@ -107,6 +118,16 @@ resource "aws_guardduty_member" "ap_southeast_2" {
   invite             = true
   invitation_message = var.invite_message
   provider           = aws.ap-southeast-2
+}
+
+resource "aws_guardduty_member" "ap_southeast_3" {
+  count              = length(var.accounts)
+  account_id         = element(keys(var.accounts), count.index)
+  detector_id        = aws_guardduty_detector.ap_southeast_3.id
+  email              = var.accounts[element(keys(var.accounts), count.index)]
+  invite             = true
+  invitation_message = var.invite_message
+  provider           = aws.ap-southeast-3
 }
 
 resource "aws_guardduty_member" "ap_northeast_2" {
