@@ -245,18 +245,18 @@ resource "aws_iam_role_policy_attachment" "source_replication" {
   policy_arn = aws_iam_policy.source_replication.arn
 }
 
-# resource "aws_s3_bucket_replication_configuration" "replication" {
-#   depends_on = [aws_s3_bucket_versioning.this]
+resource "aws_s3_bucket_replication_configuration" "this" {
+  depends_on = [aws_s3_bucket_versioning.this]
 
-#   role   = aws_iam_role.source_replication.arn
-#   bucket = aws_s3_bucket.guardduty_bucket.id
+  role   = aws_iam_role.source_replication.arn
+  bucket = aws_s3_bucket.guardduty_bucket.id
 
-#   rule {
-#     status = "Enabled"
+  rule {
+    status = "Enabled"
 
-#     destination {
-#       bucket        = var.replication_destination_bucket_arn
-#       storage_class = "STANDARD"
-#     }
-#   }
-# }
+    destination {
+      bucket        = var.replication_destination_bucket_arn
+      storage_class = "STANDARD"
+    }
+  }
+}
