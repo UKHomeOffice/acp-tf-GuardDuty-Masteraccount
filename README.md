@@ -139,4 +139,5 @@ No modules.
 |------|-------------|
 | <a name="output_bucket_arn"></a> [bucket\_arn](#output\_bucket\_arn) | ARN of bucket where GuardDuty events go |
 | <a name="output_bucket_kms_arn"></a> [bucket\_kms\_arn](#output\_bucket\_kms\_arn) | KMS key used to decrypt GuardDuty events in the S3 bucket |
+| <a name="output_bucket_name"></a> [bucket\_name](#output\_bucket\_name) | Name of bucket where GuardDuty events go |
 <!-- END_TF_DOCS -->
