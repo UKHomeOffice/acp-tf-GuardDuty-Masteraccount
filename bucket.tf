@@ -247,6 +247,7 @@ resource "aws_iam_role_policy_attachment" "source_replication" {
 
 resource "aws_s3_bucket_replication_configuration" "this" {
   depends_on = [aws_s3_bucket_versioning.this]
+  count      = var.replication_enabled ? 1 : 0
 
   role   = aws_iam_role.source_replication.arn
   bucket = aws_s3_bucket.guardduty_bucket.id
