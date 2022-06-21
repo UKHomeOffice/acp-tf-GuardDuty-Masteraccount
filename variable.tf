@@ -20,3 +20,8 @@ variable "name" {
 variable "replication_destination_bucket_arn" {
   description = "S3 Destination bucket arn for replication"
 }
+
+variable "replication_enabled" {
+  description = "Flag to toggle S3 replication"
+  default     = true
+}

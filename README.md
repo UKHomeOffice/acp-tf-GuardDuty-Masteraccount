@@ -131,8 +131,12 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | Name used to suffix S3 bucket / Roles | `any` | n/a | yes |
 | <a name="input_publishing_frequency"></a> [publishing\_frequency](#input\_publishing\_frequency) | finding\_publishing\_frequency | `string` | `"SIX_HOURS"` | no |
 | <a name="input_replication_destination_bucket_arn"></a> [replication\_destination\_bucket\_arn](#input\_replication\_destination\_bucket\_arn) | S3 Destination bucket arn for replication | `any` | n/a | yes |
+| <a name="input_replication_enabled"></a> [replication\_enabled](#input\_replication\_enabled) | Flag to toggle S3 replication | `bool` | `true` | no |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_bucket_arn"></a> [bucket\_arn](#output\_bucket\_arn) | ARN of bucket where GuardDuty events go |
+| <a name="output_bucket_kms_arn"></a> [bucket\_kms\_arn](#output\_bucket\_kms\_arn) | KMS key used to decrypt GuardDuty events in the S3 bucket |
 <!-- END_TF_DOCS -->
