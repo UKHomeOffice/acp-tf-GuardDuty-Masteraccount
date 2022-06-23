@@ -203,7 +203,7 @@ data "aws_iam_policy_document" "source_replication_policy" {
     ]
 
     resources = [
-      var.replication_destination_bucket_arn,
+      "${var.replication_destination_bucket_arn}/*",
     ]
   }
 
@@ -257,7 +257,14 @@ resource "aws_s3_bucket_replication_configuration" "this" {
 
     destination {
       bucket        = var.replication_destination_bucket_arn
+      account       = var.replication_destination_account_id
       storage_class = "STANDARD"
+    }
+
+    source_selection_criteria {
+      sse_kms_encrypted_objects {
+        status = "Enabled"
+      }
     }
   }
 }

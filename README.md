@@ -5,13 +5,36 @@ This repository  enables guard duty in all regions in the master account and sen
 # Module usage:
 ```hcl
 module "guardduty_invite" {
-  source               = "git::https://github.com/UKHomeOffice/acp-tf-GuardDuty-Masteraccount?ref=master"
-  publishing_frequency = "SIX_HOURS"
-
+  source                             = "git::https://github.com/UKHomeOffice/acp-tf-GuardDuty-Masteraccount?ref=master"
+  publishing_frequency               = "SIX_HOURS"
+  name                               = "guardduty-aggregation"
+  replication_destination_bucket_arn = "arn:aws:s3:::BUCKET-NAME"
+  
   accounts = {
     "AWS account number" = "email"
   }
+
+  providers = {
+    aws.eu-west-1      = aws.eu-west-1,
+    aws.eu-west-2      = aws.eu-west-2,
+    aws.eu-west-3      = aws.eu-west-3,
+    aws.eu-central-1   = aws.eu-central-1,
+    aws.eu-north-1     = aws.eu-north-1,
+    aws.us-east-1      = aws.us-east-1,
+    aws.us-east-2      = aws.us-east-2,
+    aws.us-west-2      = aws.us-west-2,
+    aws.us-west-1      = aws.us-west-1,
+    aws.ap-southeast-1 = aws.ap-southeast-1,
+    aws.ap-southeast-2 = aws.ap-southeast-2,
+    aws.ap-northeast-1 = aws.ap-northeast-1,
+    aws.ap-northeast-2 = aws.ap-northeast-2,
+    aws.ap-northeast-3 = aws.ap-northeast-3,
+    aws.ap-south-1     = aws.ap-south-1,
+    aws.sa-east-1      = aws.sa-east-1,
+    aws.ca-central-1   = aws.ca-central-1
+  }
 }
+
 ```
 
 <!-- BEGIN_TF_DOCS -->
@@ -126,10 +149,11 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_accounts"></a> [accounts](#input\_accounts) | n/a | `map` | `{}` | no |
-| <a name="input_invite_message"></a> [invite\_message](#input\_invite\_message) | n/a | `string` | `"Guardduty Invite"` | no |
+| <a name="input_accounts"></a> [accounts](#input\_accounts) | List of accounts to invite to be a GuardDuty member. Key'd by account number and Value as account root email address. | `map(string)` | `{}` | no |
+| <a name="input_invite_message"></a> [invite\_message](#input\_invite\_message) | Message attached to GuardDuty membership invitation. | `string` | `"Guardduty Invite"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name used to suffix S3 bucket / Roles | `any` | n/a | yes |
 | <a name="input_publishing_frequency"></a> [publishing\_frequency](#input\_publishing\_frequency) | finding\_publishing\_frequency | `string` | `"SIX_HOURS"` | no |
+| <a name="input_replication_destination_account_id"></a> [replication\_destination\_account\_id](#input\_replication\_destination\_account\_id) | S3 Destination account id | `any` | n/a | yes |
 | <a name="input_replication_destination_bucket_arn"></a> [replication\_destination\_bucket\_arn](#input\_replication\_destination\_bucket\_arn) | S3 Destination bucket arn for replication | `any` | n/a | yes |
 | <a name="input_replication_enabled"></a> [replication\_enabled](#input\_replication\_enabled) | Flag to toggle S3 replication | `bool` | `true` | no |
 

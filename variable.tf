@@ -1,10 +1,11 @@
 variable "accounts" {
-  description = ""
+  description = "List of accounts to invite to be a GuardDuty member. Key'd by account number and Value as account root email address."
   default     = {}
+  type        = map(string)
 }
 
 variable "invite_message" {
-  description = ""
+  description = "Message attached to GuardDuty membership invitation."
   default     = "Guardduty Invite"
 }
 
@@ -19,6 +20,10 @@ variable "name" {
 
 variable "replication_destination_bucket_arn" {
   description = "S3 Destination bucket arn for replication"
+}
+
+variable "replication_destination_account_id" {
+  description = "S3 Destination account id"
 }
 
 variable "replication_enabled" {
