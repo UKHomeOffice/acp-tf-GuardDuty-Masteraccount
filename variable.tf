@@ -26,6 +26,10 @@ variable "replication_destination_account_id" {
   description = "S3 Destination account id"
 }
 
+variable "replication_destination_kms_arn" {
+  description = "Destination bucket KMS key arn used to encrypt replicated objects"
+}
+
 variable "replication_enabled" {
   description = "Flag to toggle S3 replication"
   default     = true

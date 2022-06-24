@@ -155,6 +155,7 @@ No modules.
 | <a name="input_publishing_frequency"></a> [publishing\_frequency](#input\_publishing\_frequency) | finding\_publishing\_frequency | `string` | `"SIX_HOURS"` | no |
 | <a name="input_replication_destination_account_id"></a> [replication\_destination\_account\_id](#input\_replication\_destination\_account\_id) | S3 Destination account id | `any` | n/a | yes |
 | <a name="input_replication_destination_bucket_arn"></a> [replication\_destination\_bucket\_arn](#input\_replication\_destination\_bucket\_arn) | S3 Destination bucket arn for replication | `any` | n/a | yes |
+| <a name="input_replication_destination_kms_arn"></a> [replication\_destination\_kms\_arn](#input\_replication\_destination\_kms\_arn) | Destination bucket KMS key arn used to encrypt replicated objects | `any` | n/a | yes |
 | <a name="input_replication_enabled"></a> [replication\_enabled](#input\_replication\_enabled) | Flag to toggle S3 replication | `bool` | `true` | no |
 
 ## Outputs

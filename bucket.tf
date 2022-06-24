@@ -259,6 +259,9 @@ resource "aws_s3_bucket_replication_configuration" "this" {
       bucket        = var.replication_destination_bucket_arn
       account       = var.replication_destination_account_id
       storage_class = "STANDARD"
+      encryption_configuration {
+        replica_kms_key_id = var.replication_destination_kms_arn
+      }
     }
 
     source_selection_criteria {
