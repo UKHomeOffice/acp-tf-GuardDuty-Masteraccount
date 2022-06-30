@@ -217,6 +217,19 @@ data "aws_iam_policy_document" "source_replication_policy" {
       "kms:Decrypt",
     ]
   }
+
+  statement {
+    sid    = "KMSEncryptDestination"
+    effect = "Allow"
+
+    resources = [var.replication_destination_kms_arn]
+
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:Encrypt"
+    ]
+  }
+
 }
 
 data "aws_iam_policy_document" "source_replication_role" {
