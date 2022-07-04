@@ -104,67 +104,6 @@ resource "aws_kms_alias" "guardduty_key_alias" {
 
 // START - S3 replication
 
-data "aws_iam_policy_document" "source_replication_policy" {
-  statement {
-    actions = [
-      "s3:GetReplicationConfiguration",
-      "s3:ListBucket",
-    ]
-
-    resources = [
-      "${aws_s3_bucket.guardduty_bucket.arn}",
-    ]
-  }
-
-  statement {
-    actions = [
-      "s3:GetObjectVersionForReplication",
-      "s3:GetObjectVersionAcl",
-      "s3:GetObjectVersionTagging"
-    ]
-
-    resources = [
-      "${aws_s3_bucket.guardduty_bucket.arn}/*",
-    ]
-  }
-
-  statement {
-    actions = [
-      "s3:ReplicateObject",
-      "s3:ReplicateDelete",
-      "s3:ReplicateTags"
-    ]
-
-    resources = [
-      "${var.replication_destination_bucket_arn}/*",
-    ]
-  }
-
-  statement {
-    sid    = "KMSDecrypt"
-    effect = "Allow"
-
-    resources = [aws_kms_key.guardduty_key.arn]
-
-    actions = [
-      "kms:Decrypt",
-    ]
-  }
-
-  statement {
-    sid    = "KMSEncryptDestination"
-    effect = "Allow"
-
-    resources = [var.replication_destination_kms_arn]
-
-    actions = [
-      "kms:GenerateDataKey",
-      "kms:Encrypt"
-    ]
-  }
-
-}
-
 data "aws_iam_policy_document" "source_replication_role" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -183,7 +122,57 @@ resource "aws_iam_role" "source_replication" {
 
 resource "aws_iam_policy" "source_replication" {
   name   = "${var.name}-replication-policy"
-  policy = data.aws_iam_policy_document.source_replication_policy.json
+  policy = <<EOT
+{
+    "Statement": [
+        {
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetReplicationConfiguration"
+            ],
+            "Effect": "Allow",
+            "Resource": "${aws_s3_bucket.guardduty_bucket.arn}",
+            "Sid": ""
+        },
+        {
+            "Action": [
+                "s3:GetObjectVersionTagging",
+                "s3:GetObjectVersionForReplication",
+                "s3:GetObjectVersionAcl"
+            ],
+            "Effect": "Allow",
+            "Resource": "${aws_s3_bucket.guardduty_bucket.arn}/*",
+            "Sid": ""
+        },
+        {
+            "Action": [
+                "s3:ReplicateTags",
+                "s3:ReplicateObject",
+                "s3:ReplicateDelete"
+            ],
+            "Effect": "Allow",
+            "Resource": "${var.replication_destination_bucket_arn}/*",
+            "Sid": ""
+        },
+        {
+            "Action": "kms:Decrypt",
+            "Effect": "Allow",
+            "Resource": "${aws_kms_key.guardduty_key.arn}",
+            "Sid": "KMSDecrypt"
+        },
+        {
+            "Action": [
+                "kms:GenerateDataKey",
+                "kms:Encrypt"
+            ],
+            "Effect": "Allow",
+            "Resource": "${var.replication_destination_kms_arn}",
+            "Sid": "KMSEncryptDestination"
+        }
+    ],
+    "Version": "2012-10-17"
+}
+EOT
 }
 
 resource "aws_iam_role_policy_attachment" "source_replication" {
