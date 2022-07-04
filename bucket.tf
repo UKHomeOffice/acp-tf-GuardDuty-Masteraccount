@@ -191,6 +191,7 @@ resource "aws_s3_bucket_replication_configuration" "this" {
   bucket = aws_s3_bucket.guardduty_bucket.id
 
   rule {
+    id     = "Replication"
     status = "Enabled"
 
     destination {
