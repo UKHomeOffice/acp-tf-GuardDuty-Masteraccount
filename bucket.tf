@@ -2,41 +2,6 @@ data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_policy_document" "bucket_policy" {
-  statement {
-    sid = "Allow PutObject"
-    actions = [
-      "s3:PutObject"
-    ]
-
-    resources = [
-      "${aws_s3_bucket.guardduty_bucket.arn}/*"
-    ]
-
-    principals {
-      type        = "Service"
-      identifiers = ["guardduty.amazonaws.com"]
-    }
-  }
-
-  statement {
-    sid = "Allow GetBucketLocation"
-    actions = [
-      "s3:GetBucketLocation"
-    ]
-
-    resources = [
-      aws_s3_bucket.guardduty_bucket.arn
-    ]
-
-    principals {
-      type        = "Service"
-      identifiers = ["guardduty.amazonaws.com"]
-    }
-  }
-}
-
-
 data "aws_iam_policy_document" "kms_policy" {
 
   statement {
@@ -91,7 +56,31 @@ resource "aws_s3_bucket_public_access_block" "this" {
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.guardduty_bucket.id
-  policy = data.aws_iam_policy_document.bucket_policy.json
+  policy = <<EOT
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Allow PutObject",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "guardduty.amazonaws.com"
+            },
+            "Action": "s3:PutObject",
+            "Resource": "${aws_s3_bucket.guardduty_bucket.arn}/*"
+        },
+        {
+            "Sid": "Allow GetBucketLocation",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "guardduty.amazonaws.com"
+            },
+            "Action": "s3:GetBucketLocation",
+            "Resource": "${aws_s3_bucket.guardduty_bucket.arn}"
+        }
+    ]
+}
+EOT
 }
 
 resource "aws_kms_key" "guardduty_key" {
