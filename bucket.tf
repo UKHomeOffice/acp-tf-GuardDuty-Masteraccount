@@ -104,20 +104,23 @@ resource "aws_kms_alias" "guardduty_key_alias" {
 
 // START - S3 replication
 
-data "aws_iam_policy_document" "source_replication_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["s3.amazonaws.com"]
-    }
-  }
-}
-
 resource "aws_iam_role" "source_replication" {
   name               = "${var.name}-s3-replication"
-  assume_role_policy = data.aws_iam_policy_document.source_replication_role.json
+  assume_role_policy = <<EOT
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "s3.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+EOT
 }
 
 resource "aws_iam_policy" "source_replication" {
