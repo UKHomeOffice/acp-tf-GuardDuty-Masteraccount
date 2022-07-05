@@ -54,6 +54,10 @@ resource "aws_s3_bucket" "guardduty_bucket" {
         account_id         = var.replication_destination_account_id
         storage_class      = "STANDARD"
         replica_kms_key_id = var.replication_destination_kms_arn
+        metrics {
+          status  = "Enabled"
+          minutes = 15
+        }
       }
 
       source_selection_criteria {
@@ -205,31 +209,3 @@ resource "aws_iam_role_policy_attachment" "source_replication" {
   role       = aws_iam_role.source_replication.name
   policy_arn = aws_iam_policy.source_replication.arn
 }
-
-# resource "aws_s3_bucket_replication_configuration" "this" {
-#   depends_on = [aws_s3_bucket_versioning.this]
-#   count      = var.replication_enabled ? 1 : 0
-
-#   role   = aws_iam_role.source_replication.arn
-#   bucket = aws_s3_bucket.guardduty_bucket.id
-
-#   rule {
-#     id     = "Replication"
-#     status = "Enabled"
-
-#     destination {
-#       bucket        = var.replication_destination_bucket_arn
-#       account       = var.replication_destination_account_id
-#       storage_class = "STANDARD"
-#       encryption_configuration {
-#         replica_kms_key_id = var.replication_destination_kms_arn
-#       }
-#     }
-
-#     source_selection_criteria {
-#       sse_kms_encrypted_objects {
-#         status = "Enabled"
-#       }
-#     }
-#   }
-# }
