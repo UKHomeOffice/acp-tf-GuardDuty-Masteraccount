@@ -56,7 +56,6 @@ resource "aws_s3_bucket" "guardduty_bucket" {
         replica_kms_key_id = var.replication_destination_kms_arn
         metrics {
           status  = "Enabled"
-          minutes = 15
         }
       }
 
