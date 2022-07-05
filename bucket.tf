@@ -41,7 +41,6 @@ data "aws_iam_policy_document" "kms_policy" {
 resource "aws_s3_bucket" "guardduty_bucket" {
   bucket = var.name
 
-
   replication_configuration {
     role = aws_iam_role.source_replication.arn
 
@@ -54,13 +53,6 @@ resource "aws_s3_bucket" "guardduty_bucket" {
         account_id         = var.replication_destination_account_id
         storage_class      = "STANDARD"
         replica_kms_key_id = var.replication_destination_kms_arn
-        replication_time {
-          status  = "Disabled"
-        }
-
-        metrics {
-          status  = "Enabled"
-        }
       }
 
       source_selection_criteria {
