@@ -54,8 +54,14 @@ resource "aws_s3_bucket" "guardduty_bucket" {
         account_id         = var.replication_destination_account_id
         storage_class      = "STANDARD"
         replica_kms_key_id = var.replication_destination_kms_arn
+        replication_time {
+          status  = "Enabled"
+          minutes = 15
+        }
+
         metrics {
           status  = "Enabled"
+          minutes = 15
         }
       }
 
