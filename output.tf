@@ -12,3 +12,11 @@ output "bucket_kms_arn" {
   value       = aws_kms_key.guardduty_key.arn
   description = "KMS key used to decrypt GuardDuty events in the S3 bucket"
 }
+
+
+output "detector_ids" {
+  value = {
+    eu-west-2 = aws_guardduty_detector.eu_west_2.id
+   }
+  description = "GuardDuty detector ids from each region"
+}
