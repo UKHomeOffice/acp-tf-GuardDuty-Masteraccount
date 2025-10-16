@@ -17,7 +17,7 @@ resource "aws_guardduty_publishing_destination" "eu_west_1" {
 
 resource "aws_guardduty_detector" "eu_west_2" {
   enable                       = true
-  provider                     = aws
+  provider                     = aws.eu-west-2
   finding_publishing_frequency = var.publishing_frequency
 }
 
