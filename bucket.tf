@@ -68,8 +68,8 @@ resource "aws_s3_bucket_replication_configuration" "guardduty_bucket_replication
     status = "Enabled"
 
     destination {
-      bucket             = var.replication_destination_bucket_arn
-      storage_class      = "STANDARD"
+      bucket        = var.replication_destination_bucket_arn
+      storage_class = "STANDARD"
     }
 
     source_selection_criteria {
