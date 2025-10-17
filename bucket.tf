@@ -69,14 +69,12 @@ resource "aws_s3_bucket_replication_configuration" "guardduty_bucket_replication
 
     destination {
       bucket             = var.replication_destination_bucket_arn
-      account_id         = var.replication_destination_account_id
       storage_class      = "STANDARD"
-      replica_kms_key_id = var.replication_destination_kms_arn
     }
 
     source_selection_criteria {
       sse_kms_encrypted_objects {
-        enabled = true
+        status = "Enabled"
       }
     }
   }
