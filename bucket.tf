@@ -40,35 +40,41 @@ data "aws_iam_policy_document" "kms_policy" {
 
 resource "aws_s3_bucket" "guardduty_bucket" {
   bucket = var.name
+}
 
-  replication_configuration {
-    role = aws_iam_role.source_replication.arn
+resource "aws_s3_bucket_acl" "guardduty_bucket_acl" {
+  bucket = aws_s3_bucket.guardduty_bucket.id
+  acl    = "private"
+}
 
-    rules {
-      id     = "Replication"
-      status = "Enabled"
+resource "aws_s3_bucket_server_side_encryption_configuration" "guardduty_bucket_encryption" {
+  bucket = aws_s3_bucket.guardduty_bucket.id
 
-      destination {
-        bucket             = var.replication_destination_bucket_arn
-        account_id         = var.replication_destination_account_id
-        storage_class      = "STANDARD"
-        replica_kms_key_id = var.replication_destination_kms_arn
-      }
+  rule {
+    bucket_key_enabled = false
 
-      source_selection_criteria {
-        sse_kms_encrypted_objects {
-          enabled = true
-        }
-      }
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
-  
-  server_side_encryption_configuration {
-    rule {
-      bucket_key_enabled = false
+}
 
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
+resource "aws_s3_bucket_replication_configuration" "guardduty_bucket_replication" {
+  bucket = aws_s3_bucket.guardduty_bucket.id
+  role   = aws_iam_role.source_replication.arn
+
+  rule {
+    id     = "Replication"
+    status = "Enabled"
+
+    destination {
+      bucket        = var.replication_destination_bucket_arn
+      storage_class = "STANDARD"
+    }
+
+    source_selection_criteria {
+      sse_kms_encrypted_objects {
+        status = "Enabled"
       }
     }
   }
