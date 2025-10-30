@@ -70,6 +70,10 @@ resource "aws_s3_bucket_replication_configuration" "guardduty_bucket_replication
     destination {
       bucket        = var.replication_destination_bucket_arn
       storage_class = "STANDARD"
+
+      encryption_configuration {
+        replica_kms_key_id = var.replication_destination_kms_arn
+      }
     }
 
     source_selection_criteria {
