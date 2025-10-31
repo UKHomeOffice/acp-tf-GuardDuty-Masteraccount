@@ -40,6 +40,13 @@ data "aws_iam_policy_document" "kms_policy" {
 
 resource "aws_s3_bucket" "guardduty_bucket" {
   bucket = var.name
+
+  lifecycle {
+    ignore_changes = [
+      replication_configuration,
+      server_side_encryption_configuration,
+    ]
+  }
 }
 
 resource "aws_s3_bucket_acl" "guardduty_bucket_acl" {
